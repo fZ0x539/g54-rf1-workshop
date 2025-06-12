@@ -1,11 +1,16 @@
-import { useRef, useState } from "react";
+import { useRef } from "react";
+import type { FieldError } from "react-hook-form";
 
-function DatePicker() {
-  const [date, setDate] = useState("");
+interface Props {
+  value: string;
+  onChange: (value: string) => void;
+  error?: FieldError
+}
+
+function DatePicker({ value, onChange, error }: Props) {
   const today = new Date().toISOString().split("T")[0];
 
-  const dateInputRef = useRef<HTMLInputElement>(null);
-  
+  const ref = useRef<HTMLInputElement>(null);
 
   return (
     <div className="w-full">
@@ -13,21 +18,22 @@ function DatePicker() {
         Meeting Date
       </label>
       <input
-        onClick={() => dateInputRef.current?.showPicker()}
-        ref={dateInputRef}
+        ref={ref}
+        onClick={() => ref.current?.showPicker()}
         type="date"
         min={today}
-        value={date}
-        onChange={(e) => setDate(e.target.value)}
-        required
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
         className="w-full px-3 py-1 border border-gray-300 cursor-pointer focus:outline-none focus:border-gray-500 duration-75 invalid:text-gray-500  valid:text-gray-900 rounded-md "
       />
+      {error && <p className="p-1 select-none font-xs text-red-600 ">{error.message}</p>}
     </div>
   );
 }
 
-function TimePicker() {
-  const [text, setText] = useState("");
+function TimePicker({value, onChange, error}: Props) {
+
+  const ref = useRef<HTMLInputElement>(null);
 
   return (
     <>
@@ -36,17 +42,19 @@ function TimePicker() {
           Meeting Time
         </label>
         <input
-          value={text}
+          ref={ref}
+          onClick={() => ref.current?.showPicker()}
+          value={value}
           type="time"
           min="06:00"
           max="21:00"
-          onChange={(e) => setText(e.target.value)}
-          required
-          className="w-full px-3 py-1 border border-gray-300 invalid:text-gray-500 focus:outline-none focus:border-gray-500 duration-75  valid:text-gray-900 rounded-md  "
+          onChange={(e) => onChange(e.target.value)}
+          className="w-full select-none cursor-pointer  px-3 py-1 border border-gray-300 invalid:text-gray-500 focus:outline-none focus:border-gray-500 duration-75  valid:text-gray-900 rounded-md  "
         />
+        {error && <p className="p-1 select-none font-xs text-red-600 ">{error.message}</p>}
       </div>
     </>
   );
 }
 
-export {DatePicker, TimePicker};
+export { DatePicker, TimePicker };

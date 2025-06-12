@@ -3,25 +3,83 @@ import SelectMeetingLevel from "./MeetingForm/SelectMeetingLevel";
 import { DatePicker, TimePicker } from "./MeetingForm/TimeDatePicker";
 import { Description, Field, Label, Textarea } from "@headlessui/react";
 import clsx from "clsx";
+import { useState } from "react";
+import EmailTagInput from "./MeetingForm/EmailTagInput";
+import { Controller, useForm, type FieldError, type FieldErrors } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { meetingSchema, type MeetingFormValues } from "../zod/schema";
 
 const ScheduleMeetingForm = () => {
+  const [participants, setParticipants] = useState<string[]>([]);
+
+  const { register, handleSubmit, control, formState: {errors} } = useForm<MeetingFormValues>({
+    resolver: zodResolver(meetingSchema),
+    defaultValues: {
+      title: "",
+      date: "",
+      time: "",
+      meetingLevel: "Client",
+      participants: [],
+      description: "",
+    },
+  });
+  const onSubmit = (data: any) => {
+    console.log("Form data:", data);
+  };
+
+  const onError = (errors: any) => {
+    console.error("Form errors:", errors);
+  };
+
   return (
     <div className="bg-gray-50 p-6 border border-gray-200  rounded-lg shadow-sm">
       <h2 className="text-xl font-bold mb-6">Schedule Meeting</h2>
-      <form className="flex flex-col gap-3">
-        <TextInput label="Meeting Time" placeholder="Enter meeting title" />
-        <div className="flex  items-center space-between gap-4 w-full">
-          <DatePicker />
-          <TimePicker />
-        </div>
-        <SelectMeetingLevel />
+      <form
+        className="flex flex-col gap-3"
+        onSubmit={handleSubmit(onSubmit, onError)}
+      >
         <TextInput
-          label="Participants"
-          placeholder="Enter participants email"
+          {...register("title")}
+          error={errors.title}
+          label="Meeting Time"
+          placeholder="Enter meeting title"
         />
-        <TextArea />
+        <div className="flex  space-between gap-4 w-full">
+          <Controller
+            name="date"
+            control={control}
+            render={({ field, fieldState: { error } }) => (
+              <DatePicker
+                error={error}
+                value={field.value}
+                onChange={field.onChange}
+              />
+            )}
+          />
+          <Controller
+            name="time"
+            control={control}
+            render={({ field, fieldState: { error } }) => (
+              <TimePicker
+                error={error}
+                value={field.value}
+                onChange={field.onChange}
+              />
+            )}
+          />
+        </div>
+        <SelectMeetingLevel control={control} name="meetingLevel" />
+        
+        {/* <EmailTagInput
+          participants={participants}
+          setParticipants={setParticipants}
+        /> */}
+        <TextArea error={errors.description} {...register("description")} />
 
-        <button className="mt-4 flex items-center gap-3 cursor-pointer bg-zinc-500 text-white px-4 py-2 rounded-md duration-75 hover:bg-zinc-600">
+        <button
+          className="mt-4 flex items-center gap-3 cursor-pointer bg-zinc-500 text-white px-4 py-2 rounded-md duration-75 hover:bg-zinc-600"
+          type="submit"
+        >
           <BiSolidCat />
           Create Meeting
         </button>
@@ -33,9 +91,12 @@ const ScheduleMeetingForm = () => {
 function TextInput({
   label,
   placeholder,
+  error,
+  ...props
 }: {
   label: string;
   placeholder: string;
+  error?: FieldError;
 }) {
   return (
     <>
@@ -48,30 +109,32 @@ function TextInput({
           type="text"
           autoComplete="on"
           placeholder={placeholder}
+          {...props}
         />
+        {error && <p className="p-1 select-none font-xs text-red-600">{error.message}</p>}
       </div>
     </>
   );
 }
 
-function TextArea() {
+function TextArea({ error, ...props }: {error?: FieldError}) {
   return (
     <>
       <div className="w-full ">
-        <Field>
-          <Label className="block font-medium text-zinc-700 mb-1 mx-1">
+          <label className="block font-medium text-zinc-700 mb-1 mx-1">
             Description
-          </Label>
-          <Description className="font-light text-sm text-zinc-700 mx-1">
+          </label>
+          <p className="font-light text-sm text-zinc-700 mx-1">
             This will be shown under the product title.
-          </Description>
-          <Textarea
+          </p>
+          <textarea
+            {...props}
             className={clsx(
               "mt-3 block w-full resize-none rounded-lg border border-gray-300 focus:border-gray-500 focus:outline-none bg-grey-500 px-3 py-1.5  text-black"
             )}
             rows={3}
           />
-        </Field>
+          {error && <p className="p-1 select-none font-xs text-red-600">{error.message}</p>}
       </div>
     </>
   );
