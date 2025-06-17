@@ -8,8 +8,8 @@ export const meetingSchema = z.object({
   date: z.string().min(1, "Date is required"),
   time: z.string().min(1, "Time is required"),
   meetingLevel: z.enum(meetingLevels), // Now just stores the string
-  participants: z.array(z.string()).optional(),
-  description: z.string().min(1, "Please enter a description.").optional()
+  participants: z.array(z.string().email()).min(1, "At least one participant is required"),
+  description: z.string().min(1, "Please enter a description.")
 });
 
 export type MeetingFormValues = z.infer<typeof meetingSchema>;

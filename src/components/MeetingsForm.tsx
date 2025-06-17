@@ -1,18 +1,25 @@
+import { zodResolver } from "@hookform/resolvers/zod";
+import clsx from "clsx";
+import type { Dispatch, SetStateAction } from "react";
+import { Controller, useForm, type FieldError } from "react-hook-form";
 import { BiSolidCat } from "react-icons/bi";
+import { meetingSchema, type MeetingFormValues } from "../zod/schema";
+import { EmailTagInputRHF } from "./MeetingForm/EmailTagInput";
 import SelectMeetingLevel from "./MeetingForm/SelectMeetingLevel";
 import { DatePicker, TimePicker } from "./MeetingForm/TimeDatePicker";
-import { Description, Field, Label, Textarea } from "@headlessui/react";
-import clsx from "clsx";
-import { useState } from "react";
-import EmailTagInput from "./MeetingForm/EmailTagInput";
-import { Controller, useForm, type FieldError, type FieldErrors } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { meetingSchema, type MeetingFormValues } from "../zod/schema";
 
-const ScheduleMeetingForm = () => {
-  const [participants, setParticipants] = useState<string[]>([]);
+interface ScheduleMeetingFormProps {
+  setMeetings: Dispatch<SetStateAction<MeetingFormValues[]>>;
+}
 
-  const { register, handleSubmit, control, formState: {errors} } = useForm<MeetingFormValues>({
+const ScheduleMeetingForm = ({ setMeetings }: ScheduleMeetingFormProps) => {
+  const {
+    register,
+    handleSubmit,
+    control,
+    formState: { errors },
+    reset,
+  } = useForm<MeetingFormValues>({
     resolver: zodResolver(meetingSchema),
     defaultValues: {
       title: "",
@@ -23,8 +30,22 @@ const ScheduleMeetingForm = () => {
       description: "",
     },
   });
-  const onSubmit = (data: any) => {
+  const onSubmit = (data: MeetingFormValues) => {
     console.log("Form data:", data);
+    setMeetings((prevMeetings) => {
+      return [
+        ...prevMeetings,
+        {
+          title: data.title,
+          date: data.date,
+          time: data.time,
+          meetingLevel: data.meetingLevel,
+          participants: [...data.participants],
+          description: data.description
+        },
+      ];
+    });
+    reset();
   };
 
   const onError = (errors: any) => {
@@ -69,11 +90,8 @@ const ScheduleMeetingForm = () => {
           />
         </div>
         <SelectMeetingLevel control={control} name="meetingLevel" />
-        
-        {/* <EmailTagInput
-          participants={participants}
-          setParticipants={setParticipants}
-        /> */}
+
+        <EmailTagInputRHF name="participants" control={control} />
         <TextArea error={errors.description} {...register("description")} />
 
         <button
@@ -111,30 +129,38 @@ function TextInput({
           placeholder={placeholder}
           {...props}
         />
-        {error && <p className="p-1 select-none font-xs text-red-600">{error.message}</p>}
+        {error && (
+          <p className="p-1 select-none font-xs text-red-600">
+            {error.message}
+          </p>
+        )}
       </div>
     </>
   );
 }
 
-function TextArea({ error, ...props }: {error?: FieldError}) {
+function TextArea({ error, ...props }: { error?: FieldError }) {
   return (
     <>
       <div className="w-full ">
-          <label className="block font-medium text-zinc-700 mb-1 mx-1">
-            Description
-          </label>
-          <p className="font-light text-sm text-zinc-700 mx-1">
-            This will be shown under the product title.
+        <label className="block font-medium text-zinc-700 mb-1 mx-1">
+          Description
+        </label>
+        <p className="font-light text-sm text-zinc-700 mx-1">
+          This will be shown under the product title.
+        </p>
+        <textarea
+          {...props}
+          className={clsx(
+            "mt-3 block w-full resize-none rounded-lg border border-gray-300 focus:border-gray-500 focus:outline-none bg-grey-500 px-3 py-1.5  text-black"
+          )}
+          rows={3}
+        />
+        {error && (
+          <p className="p-1 select-none font-xs text-red-600">
+            {error.message}
           </p>
-          <textarea
-            {...props}
-            className={clsx(
-              "mt-3 block w-full resize-none rounded-lg border border-gray-300 focus:border-gray-500 focus:outline-none bg-grey-500 px-3 py-1.5  text-black"
-            )}
-            rows={3}
-          />
-          {error && <p className="p-1 select-none font-xs text-red-600">{error.message}</p>}
+        )}
       </div>
     </>
   );

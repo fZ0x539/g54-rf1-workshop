@@ -1,23 +1,28 @@
 import { MdEditNote } from "react-icons/md";
 import { TiDeleteOutline } from "react-icons/ti";
+import type { MeetingFormValues } from "../zod/schema";
 
-export default function Example() {
-  const meetings = [
-    {
-      id: 1,
-      title: "Project Kickoff",
-      date: "2024-05-15",
-      time: "10:00 AM",
-      level: "Team",
-    },
-    {
-      id: 2,
-      title: "Quarterly Review",
-      date: "2024-06-01",
-      time: "02:00 PM",
-      level: "Department",
-    },
-  ];
+interface MeetingsListProps {
+  meetings: MeetingFormValues[];
+}
+
+export default function Example({meetings}: MeetingsListProps) {
+  // const meetings = [
+  //   {
+  //     id: 1,
+  //     title: "Project Kickoff",
+  //     date: "2024-05-15",
+  //     time: "10:00 AM",
+  //     level: "Team",
+  //   },
+  //   {
+  //     id: 2,
+  //     title: "Quarterly Review",
+  //     date: "2024-06-01",
+  //     time: "02:00 PM",
+  //     level: "Department",
+  //   },
+  // ];
 
   return (
     <div className="my-5 bg-gray-50 p-6 border border-gray-200 rounded-lg shadow-sm">
@@ -41,25 +46,25 @@ export default function Example() {
                       scope="col"
                       className="py-3.5 pr-3 pl-4 text-left text-sm font-semibold text-gray-900 sm:pl-6"
                     >
-                      Name
+                      Meeting Title
                     </th>
                     <th
                       scope="col"
                       className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                     >
-                      Title
+                      Date
                     </th>
                     <th
                       scope="col"
                       className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                     >
-                      Email
+                      Time
                     </th>
                     <th
                       scope="col"
                       className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                     >
-                      Role
+                      Level
                     </th>
                     <th
                       scope="col"
@@ -70,24 +75,24 @@ export default function Example() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200 bg-white">
-                  {meetings.map((meeting) => (
-                    <tr key={meeting.id}>
+                  {meetings.map((meeting, index) => (
+                    <tr key={index}>
                       <td className="py-4 pr-3 pl-4 text-sm font-medium whitespace-nowrap text-gray-900 sm:pl-6">
                         {meeting.title}
                       </td>
-                      <td className="px-3 py-4 text-sm whitespace-nowrap text-gray-500">
+                      <td className="px-3 py-4 text-sm whitespace-nowrap text-gray-600">
                         {meeting.date}
                       </td>
-                      <td className="px-3 py-4 text-sm whitespace-nowrap text-gray-500">
+                      <td className="px-3 py-4 text-sm whitespace-nowrap text-gray-600">
                         {meeting.time}
                       </td>
-                      <td className="px-3 py-4 text-sm whitespace-nowrap text-gray-500">
-                        {meeting.level}
+                      <td className="px-3 py-4 text-sm whitespace-nowrap text-gray-600">
+                        {meeting.meetingLevel}
                       </td>
                       <td className="flex justify-center gap-1 py-5 sm:pr-6">
-                        <a href="#edit" className="hover:opacity-80 duration-75"><MdEditNote size={24} /></a>
+                        <a href="#edit" className="hover:opacity-80 duration-125 hover:text-orange-400 text-orange-600"><MdEditNote size={24} /></a>
 
-                        <a href="#delete" className="hover:opacity-80 duration-75"><TiDeleteOutline size={24} /></a>
+                        <a href="#delete" className="hover:opacity-80 hover:text-red-400 duration-125 text-red-600"><TiDeleteOutline size={24} /></a>
                       </td>
                     </tr>
                   ))}

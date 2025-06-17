@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import { Controller } from "react-hook-form";
 
 interface EmailTagInputProps {
   participants: string[];
@@ -58,24 +59,6 @@ const EmailTagInput = ({
     setParticipants(participants.filter((email) => email !== emailToRemove));
   };
 
-  // const handlePaste = (e: any) => {
-  //   e.preventDefault();
-  //   const pasteData = e.clipboardData.getData('text');
-  //   const emails = pasteData.split(/[\s,;]+/).filter((email: string) => email.trim() !== '');
-
-  //   const validEmails = emails.filter((email: string) => isValidEmail(email));
-  //   const newEmails = validEmails.filter((email: string) => !participants.includes(email));
-
-  //   if (newEmails.length > 0) {
-  //     setParticipants([...participants, ...newEmails]);
-  //   }
-
-  //   if (emails.length !== validEmails.length) {
-  //     setError('Some pasted emails were invalid');
-  //     setTimeout(() => setError(''), 2000);
-  //   }
-  // };
-
   const handleBlur = () => {
     if (inputValue.trim()) {
       addEmail();
@@ -127,14 +110,47 @@ const EmailTagInput = ({
   );
 };
 
-// Usage in your MeetingsForm component:
-/*
-const [participants, setParticipants] = useState([]);
+interface EmailTagInputRHFProps {
+  name: string;
+  control: any; // or use proper type from RHF
+}
 
-<EmailTagInput
-  participants={participants}
-  setParticipants={setParticipants}
-/>
-*/
+export const EmailTagInputRHF = ({ name, control }: EmailTagInputRHFProps) => {
+  return (
+    <Controller
+      name={name}
+      control={control}
+      render={({ field: { value, onChange }, fieldState: { error } }) => (
+        <div>
+          <EmailTagInput
+            participants={value || []}
+            setParticipants={onChange}
+          />
+          {error?.message && (
+            <p className="text-red-500 text-sm mt-1">{error.message}</p>
+          )}
+        </div>
+      )}
+    />
+  );
+};
 
-export default EmailTagInput;
+export default EmailTagInputRHF;
+
+// const handlePaste = (e: any) => {
+//   e.preventDefault();
+//   const pasteData = e.clipboardData.getData('text');
+//   const emails = pasteData.split(/[\s,;]+/).filter((email: string) => email.trim() !== '');
+
+//   const validEmails = emails.filter((email: string) => isValidEmail(email));
+//   const newEmails = validEmails.filter((email: string) => !participants.includes(email));
+
+//   if (newEmails.length > 0) {
+//     setParticipants([...participants, ...newEmails]);
+//   }
+
+//   if (emails.length !== validEmails.length) {
+//     setError('Some pasted emails were invalid');
+//     setTimeout(() => setError(''), 2000);
+//   }
+// };

@@ -4,8 +4,17 @@ import Navbar from "./components/Navbar";
 import ScheduleMeetingForm from "./components/MeetingsForm";
 import MeetingsList from "./components/MeetingsList";
 import clsx from "clsx";
+import { useState } from "react";
+import type { MeetingFormValues } from "./zod/schema";
+
 
 function App() {
+
+  const [meetings, setMeetings] = useState<MeetingFormValues[]>([]);
+
+  console.log(meetings);
+  
+
   return (
     <>
       <div className="min-h-screen grid grid-rows-[auto_1fr_auto]">
@@ -16,8 +25,8 @@ function App() {
             'md:col-span-3',
             'col-span-4'
             )}>
-            <ScheduleMeetingForm />
-            <MeetingsList />
+            <ScheduleMeetingForm setMeetings={setMeetings} />
+            <MeetingsList meetings={meetings} />
           </div>
         </div>
         <Footer />
