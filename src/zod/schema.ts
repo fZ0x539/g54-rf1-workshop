@@ -12,7 +12,7 @@ export const meetingSchema = z.object({
   description: z.string().min(1, "Please enter a description.")
 });
 
-export type MeetingFormValues = z.infer<typeof meetingSchema>;
+export type Meeting = z.infer<typeof meetingSchema>;
 
 
 // const schema = z.object({

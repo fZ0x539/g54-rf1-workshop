@@ -1,25 +1,23 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import clsx from "clsx";
-import type { Dispatch, SetStateAction } from "react";
 import { Controller, useForm, type FieldError } from "react-hook-form";
 import { BiSolidCat } from "react-icons/bi";
-import { meetingSchema, type MeetingFormValues } from "../zod/schema";
+import useAddMeeting from "../hooks/useAddMeeting";
+import { meetingSchema, type Meeting } from "../zod/schema";
 import { EmailTagInputRHF } from "./MeetingForm/EmailTagInput";
 import SelectMeetingLevel from "./MeetingForm/SelectMeetingLevel";
 import { DatePicker, TimePicker } from "./MeetingForm/TimeDatePicker";
 
-interface ScheduleMeetingFormProps {
-  setMeetings: Dispatch<SetStateAction<MeetingFormValues[]>>;
-}
+const ScheduleMeetingForm = () => {
+  const addMeeting = useAddMeeting();
 
-const ScheduleMeetingForm = ({ setMeetings }: ScheduleMeetingFormProps) => {
   const {
     register,
     handleSubmit,
     control,
     formState: { errors },
     reset,
-  } = useForm<MeetingFormValues>({
+  } = useForm<Meeting>({
     resolver: zodResolver(meetingSchema),
     defaultValues: {
       title: "",
@@ -30,20 +28,15 @@ const ScheduleMeetingForm = ({ setMeetings }: ScheduleMeetingFormProps) => {
       description: "",
     },
   });
-  const onSubmit = (data: MeetingFormValues) => {
+  const onSubmit = (data: Meeting) => {
     console.log("Form data:", data);
-    setMeetings((prevMeetings) => {
-      return [
-        ...prevMeetings,
-        {
-          title: data.title,
-          date: data.date,
-          time: data.time,
-          meetingLevel: data.meetingLevel,
-          participants: [...data.participants],
-          description: data.description
-        },
-      ];
+    addMeeting.mutate({
+      title: data.title,
+      date: data.date,
+      time: data.time,
+      meetingLevel: data.meetingLevel,
+      participants: [...data.participants],
+      description: data.description,
     });
     reset();
   };

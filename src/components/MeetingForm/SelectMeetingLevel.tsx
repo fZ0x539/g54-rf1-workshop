@@ -15,25 +15,17 @@ import {
 import { FaCheck, FaChevronDown } from "react-icons/fa";
 import { meetingLevels } from "../../zod/schema";
 
-const levels = [
-  { id: 1, name: "Team" },
-  { id: 2, name: "Department" },
-  { id: 3, name: "Division" },
-  { id: 4, name: "Client" },
-];
-
 interface SelectMeetingLevelProps<T extends FieldValues> {
   control: Control<T>;
   name: Path<T>;
-  label?: string;
 }
 
 export default function SelectMeetingLevel<T extends FieldValues>({
   control,
-  name,
-  label = "Meeting Level",
+  name
 }: SelectMeetingLevelProps<T>) {
-  const [selected, setSelected] = useState(levels[3]);
+  const [selected, setSelected] = useState();
+
 
   return (
     <Controller
