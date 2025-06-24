@@ -95,8 +95,8 @@ export default function MeetingsList() {
                         ))
                     : meetings?.map((meeting, index) => (
                         <tr key={index}>
-                          <td className="py-4 pr-3 pl-4 text-sm font-medium whitespace-nowrap text-gray-900 sm:pl-6">
-                            <NavLink to={`/calendar/meetings/` + meeting.id}>
+                          <td className="py-4 pr-3 pl-4 text-sm font-medium whitespace-nowrap text-gray-900  sm:pl-6">
+                            <NavLink className="hover:text-gray-600" to={`/calendar/meetings/` + meeting.id}>
                               {meeting.title}
                             </NavLink>
                           </td>
@@ -110,12 +110,12 @@ export default function MeetingsList() {
                             {meeting.meetingLevel}
                           </td>
                           <td className="flex justify-center gap-1 py-5 sm:pr-6">
-                            <a
-                              href="#edit"
+                            <NavLink
+                              to={`/calendar/meetings/${meeting.id}/edit`}
                               className="hover:opacity-80 duration-125 hover:text-orange-300 "
                             >
                               <MdEditNote size={24} />
-                            </a>
+                            </NavLink>
 
                             <button
                               onClick={() =>

@@ -10,8 +10,8 @@ import { useState } from "react";
 import useDeleteMeeting from "../hooks/useDeleteMeeting";
 
 export default function MeetingItem() {
-  const { id } = useParams();
-  const numericId = parseInt(id ?? "0"); // fallback to 0 if undef
+  const { meetingId } = useParams();
+  const numericId = parseInt(meetingId ?? "0"); // fallback to 0 if undef
   const { data: meeting } = useMeeting(numericId);
   const [meetingToDelete, setMeetingToDelete] = useState<string | null>(null);
   const deleteMeeting = useDeleteMeeting();

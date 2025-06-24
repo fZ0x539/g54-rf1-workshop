@@ -9,6 +9,8 @@ import MeetingsForm from "./components/MeetingsForm";
 import UsersPage from "./pages/UsersPage";
 import MeetingItem from "./components/MeetingItem";
 import MeetingsLayout from "./pages/MeetingsPage";
+import MeetingsFormAddEdit from "./components/MeetingsForm";
+import IndividualMeetingPage from "./pages/IndividualMeetingPage";
 
 const router = createBrowserRouter([
   {
@@ -24,14 +26,16 @@ const router = createBrowserRouter([
           { index: true, Component: DashboardPage },
           {
             path: "meetings",
-            Component: MeetingsLayout,  // This needs an Outlet
+            Component: MeetingsLayout,
             children: [
               { index: true, Component: MeetingsList },
               { path: "add", Component: MeetingsForm },
-              { path: ":id", Component: MeetingItem },
+              { path: ":meetingId", Component: IndividualMeetingPage, children: [
+                { index: true, Component: MeetingItem },
+                { path: "edit", Component: MeetingsFormAddEdit },
+              ]},
             ],
           },
-          // { path: "meetings/add", Component: MeetingsForm },
           { path: "users", Component: UsersPage },
         ],
       },

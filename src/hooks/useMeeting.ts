@@ -3,17 +3,17 @@ import APIClient from "../services/apiClient";
 import { type Meeting } from "../zod/schema";
 import { CACHE_KEY_MEETINGS } from "../constants";
 
-export interface MeetingResponse extends Meeting {
+export interface MeetingRequest extends Meeting {
   id: number;
 }
 
-const apiClient = new APIClient<MeetingResponse>("/meetings");
+const apiClient = new APIClient<MeetingRequest>("/meetings");
 
 export function useMeetings() {
   return useQuery({
     queryKey: CACHE_KEY_MEETINGS,
     queryFn: apiClient.getAll,
-    staleTime: 5 * 1000,
+    staleTime: 5 * 60 * 1000,
   });
 }
 
@@ -23,10 +23,10 @@ export function useMeeting(id: number) {
   return useQuery({
     queryKey: ["meeting", id],
     queryFn: () => apiClient.getById(id),
-    staleTime: 5 * 1000,
+    staleTime: 5 * 60 * 1000,
     initialData: () => {
       return queryClient
-        .getQueryData<MeetingResponse[]>(CACHE_KEY_MEETINGS)
+        .getQueryData<MeetingRequest[]>(CACHE_KEY_MEETINGS)
         ?.find((m) => m.id === id);
     },
     initialDataUpdatedAt: () => {

@@ -1,15 +1,24 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import clsx from "clsx";
-import { Controller, useForm, type FieldError } from "react-hook-form";
+import { useEffect, useState } from 'react';
+import { Controller, useForm } from "react-hook-form";
 import { BiSolidCat } from "react-icons/bi";
 import useAddMeeting from "../hooks/useAddMeeting";
+import { useMeeting } from '../hooks/useMeeting';
+import useUpdateMeeting from '../hooks/useUpdateMeeting';
 import { meetingSchema, type Meeting } from "../zod/schema";
 import { EmailTagInputRHF } from "./MeetingForm/EmailTagInput";
 import SelectMeetingLevel from "./MeetingForm/SelectMeetingLevel";
 import { DatePicker, TimePicker } from "./MeetingForm/TimeDatePicker";
-import { useState } from "react";
+import { TextArea, TextInput } from './MeetingForm/TextInputArea';
+import { useParams } from "react-router";
 
-const MeetingsForm = () => {
+
+const MeetingsFormAddEdit = () => {
+
+  const params = useParams();
+  const meetingId = params.meetingId;
+  
+
   const {
     register,
     handleSubmit,
@@ -29,22 +38,59 @@ const MeetingsForm = () => {
   });
 
   const [rqError, setRqError] = useState('');
-
   const addMeeting = useAddMeeting();
+  const updateMeeting = useUpdateMeeting(); 
+
+  // Fetch meeting data if in edit mode
+  const { data: existingMeeting } = useMeeting(parseInt(meetingId || '0'));
+
+  // Populate form when existingMeeting changes
+  useEffect(() => {
+    if (existingMeeting) {
+      reset({
+        title: existingMeeting.title,
+        date: existingMeeting.date,
+        time: existingMeeting.time,
+        meetingLevel: existingMeeting.meetingLevel,
+        participants: [...existingMeeting.participants],
+        description: existingMeeting.description,
+      });
+    }
+  }, [existingMeeting, reset]);
 
   const onSubmit = (data: Meeting) => {
-    console.log("Form data:", data);
-    addMeeting.mutate(
-      {
-        title: data.title,
-        date: data.date,
-        time: data.time,
-        meetingLevel: data.meetingLevel,
-        participants: [...data.participants],
-        description: data.description,
-      },
-      { onSuccess: () => { reset(); setRqError('')}, onError: (error) => setRqError(error.message) }
-    );
+    if (meetingId) {
+      // Update existing meeting
+      updateMeeting.mutate(
+        { id: parseInt(meetingId), ...data },
+        { 
+          onSuccess: () => {
+            // reset();
+            setRqError('');
+          },
+          onError: (error: Error) => setRqError(error.message)
+        }
+      );
+    } else {
+      // Create new meeting
+      addMeeting.mutate(
+        {
+          title: data.title,
+          date: data.date,
+          time: data.time,
+          meetingLevel: data.meetingLevel,
+          participants: [...data.participants],
+          description: data.description,
+        },
+        { 
+          onSuccess: () => { 
+            reset(); 
+            setRqError('');
+          },
+          onError: (error) => setRqError(error.message) 
+        }
+      );
+    }
   };
 
   const onError = (errors: any) => {
@@ -52,8 +98,10 @@ const MeetingsForm = () => {
   };
 
   return (
-    <div className="bg-gray-50 p-6 border border-gray-200  rounded-lg shadow-sm">
-      <h2 className="text-xl font-bold mb-6">Schedule Meeting</h2>
+    <div className="bg-gray-50 p-6 border border-gray-200 rounded-lg shadow-sm">
+      <h2 className="text-xl font-bold mb-6">
+        {meetingId ? 'Edit Meeting' : 'Schedule Meeting'}
+      </h2>
       <form
         className="flex flex-col gap-3"
         onSubmit={handleSubmit(onSubmit, onError)}
@@ -61,10 +109,10 @@ const MeetingsForm = () => {
         <TextInput
           {...register("title")}
           error={errors.title}
-          label="Meeting Time"
+          label="Meeting Title"
           placeholder="Enter meeting title"
         />
-        <div className="flex  space-between gap-4 w-full">
+        <div className="flex space-between gap-4 w-full">
           <Controller
             name="date"
             control={control}
@@ -89,7 +137,6 @@ const MeetingsForm = () => {
           />
         </div>
         <SelectMeetingLevel control={control} name="meetingLevel" />
-
         <EmailTagInputRHF name="participants" control={control} />
         <TextArea error={errors.description} {...register("description")} />
 
@@ -98,77 +145,18 @@ const MeetingsForm = () => {
           type="submit"
         >
           <BiSolidCat />
-          Create Meeting
+          {meetingId ? 'Update Meeting' : 'Create Meeting'}
         </button>
       </form>
       {rqError && (
-          <p className="p-1 select-none font-xs text-red-600">
-            {rqError}
-          </p>
-        )}
+        <p className="p-1 select-none font-xs text-red-600">
+          {rqError}
+        </p>
+      )}
     </div>
   );
 };
 
-function TextInput({
-  label,
-  placeholder,
-  error,
-  ...props
-}: {
-  label: string;
-  placeholder: string;
-  error?: FieldError;
-}) {
-  return (
-    <>
-      <div className="">
-        <label className="block font-medium text-zinc-700 mb-2 m-1">
-          {label}
-        </label>
-        <input
-          className="w-full px-3 py-1 border border-gray-300 rounded-md focus:outline-none focus:border-gray-500 duration-75"
-          type="text"
-          autoComplete="on"
-          placeholder={placeholder}
-          {...props}
-        />
-        {error && (
-          <p className="p-1 select-none font-xs text-red-600">
-            {error.message}
-          </p>
-        )}
-      </div>
-    </>
-  );
-}
+// Your TextInput and TextArea components remain the same
 
-function TextArea({ error, ...props }: { error?: FieldError }) {
-  return (
-    <>
-      <div className="w-full ">
-        <label className="block font-medium text-zinc-700 mb-1 mx-1">
-          Description
-        </label>
-        <p className="font-light text-sm text-zinc-700 mx-1">
-          This will be shown under the product title.
-        </p>
-        <textarea
-          {...props}
-          className={clsx(
-            "mt-3 block w-full resize-none rounded-lg border border-gray-300 focus:border-gray-500 focus:outline-none bg-grey-500 px-3 py-1.5  text-black"
-          )}
-          rows={3}
-        />
-        {error && (
-          <p className="p-1 select-none font-xs text-red-600">
-            {error.message}
-          </p>
-        )}
-        
-      </div>
-    </>
-  );
-}
-
-export default MeetingsForm;
+export default MeetingsFormAddEdit;

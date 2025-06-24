@@ -2,9 +2,9 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { CACHE_KEY_MEETINGS } from "../constants";
 import APIClient from "../services/apiClient";
-import type { MeetingResponse } from "./useMeeting";
+import type { MeetingRequest } from "./useMeeting";
 
-const apiClient = new APIClient<MeetingResponse>("/meetings");
+const apiClient = new APIClient<MeetingRequest>("/meetings");
 
 export default function useDeleteMeeting() {
   const queryClient = useQueryClient();
@@ -13,7 +13,7 @@ export default function useDeleteMeeting() {
     mutationFn: (meetingId: string) => apiClient.delete(parseInt(meetingId)),
     onMutate: (meetingId) => {
       queryClient.cancelQueries({ queryKey: CACHE_KEY_MEETINGS });
-      const meetings = queryClient.getQueryData<MeetingResponse[]>(CACHE_KEY_MEETINGS);
+      const meetings = queryClient.getQueryData<MeetingRequest[]>(CACHE_KEY_MEETINGS);
       const meeting = meetings?.find((m) => m.id === parseInt(meetingId));
       return { meeting };
     },
