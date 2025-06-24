@@ -6,16 +6,15 @@ import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 
 export default function MeetingsList() {
-  const { data: meetings, isLoading } = useMeeting();
+  const { data: meetings, isLoading, error } = useMeeting();
 
   return (
     <div className=" bg-gray-50 p-6 border border-gray-200 rounded-lg shadow-sm">
       <div className="sm:flex sm:items-center">
         <div className="sm:flex-auto">
-          <h2 className="text-base font-semibold text-gray-900">Users</h2>
+          <h2 className="text-base font-semibold text-gray-900">Meetings</h2>
           <p className="mt-2 text-sm text-gray-700">
-            A list of all the users in your account including their name, title,
-            email and role.
+            A brief overview of all meetings.
           </p>
         </div>
       </div>
@@ -92,7 +91,7 @@ export default function MeetingsList() {
                             {meeting.date}
                           </td>
                           <td className="px-3 py-4 text-sm whitespace-nowrap text-gray-600">
-                            {meeting.time}
+                            {meeting.time.substring(0,5)}
                           </td>
                           <td className="px-3 py-4 text-sm whitespace-nowrap text-gray-600">
                             {meeting.meetingLevel}
@@ -100,14 +99,14 @@ export default function MeetingsList() {
                           <td className="flex justify-center gap-1 py-5 sm:pr-6">
                             <a
                               href="#edit"
-                              className="hover:opacity-80 duration-125 hover:text-orange-400 text-orange-600"
+                              className="hover:opacity-80 duration-125 hover:text-orange-400 "
                             >
                               <MdEditNote size={24} />
                             </a>
 
                             <a
                               href="#delete"
-                              className="hover:opacity-80 hover:text-red-400 duration-125 text-red-600"
+                              className="hover:opacity-80 hover:text-red-400 duration-125"
                             >
                               <TiDeleteOutline size={24} />
                             </a>
@@ -120,6 +119,7 @@ export default function MeetingsList() {
           </div>
         </div>
       </div>
+      {error && <p className="p-1 mt-2 select-none font-xs text-red-600">{error.message}</p>}
     </div>
   );
 }
