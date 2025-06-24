@@ -56,7 +56,7 @@ const ListGroup = () => {
               }
             )}
           >
-            <span className="inline group-hover:animate-spin">{item.icon}</span>
+            <span className="inline">{item.icon}</span>
             <p className="inline-block transition-transform duration-75 active:scale-95 group-active:scale-95">
               {item.name}
             </p>

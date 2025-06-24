@@ -7,10 +7,9 @@ import { meetingSchema, type Meeting } from "../zod/schema";
 import { EmailTagInputRHF } from "./MeetingForm/EmailTagInput";
 import SelectMeetingLevel from "./MeetingForm/SelectMeetingLevel";
 import { DatePicker, TimePicker } from "./MeetingForm/TimeDatePicker";
+import { useState } from "react";
 
 const MeetingsForm = () => {
-  const addMeeting = useAddMeeting();
-
   const {
     register,
     handleSubmit,
@@ -28,17 +27,24 @@ const MeetingsForm = () => {
       description: "",
     },
   });
+
+  const [rqError, setRqError] = useState('');
+
+  const addMeeting = useAddMeeting();
+
   const onSubmit = (data: Meeting) => {
     console.log("Form data:", data);
-    addMeeting.mutate({
-      title: data.title,
-      date: data.date,
-      time: data.time,
-      meetingLevel: data.meetingLevel,
-      participants: [...data.participants],
-      description: data.description,
-    });
-    reset();
+    addMeeting.mutate(
+      {
+        title: data.title,
+        date: data.date,
+        time: data.time,
+        meetingLevel: data.meetingLevel,
+        participants: [...data.participants],
+        description: data.description,
+      },
+      { onSuccess: () => { reset(); setRqError('')}, onError: (error) => setRqError(error.message) }
+    );
   };
 
   const onError = (errors: any) => {
@@ -95,6 +101,11 @@ const MeetingsForm = () => {
           Create Meeting
         </button>
       </form>
+      {rqError && (
+          <p className="p-1 select-none font-xs text-red-600">
+            {rqError}
+          </p>
+        )}
     </div>
   );
 };
@@ -154,6 +165,7 @@ function TextArea({ error, ...props }: { error?: FieldError }) {
             {error.message}
           </p>
         )}
+        
       </div>
     </>
   );

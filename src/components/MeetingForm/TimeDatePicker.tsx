@@ -4,7 +4,7 @@ import type { FieldError } from "react-hook-form";
 interface Props {
   value: string;
   onChange: (value: string) => void;
-  error?: FieldError
+  error?: FieldError;
 }
 
 function DatePicker({ value, onChange, error }: Props) {
@@ -22,17 +22,24 @@ function DatePicker({ value, onChange, error }: Props) {
         onClick={() => ref.current?.showPicker()}
         type="date"
         min={today}
+        max={(() => {
+          const today = new Date();
+          const tenYearsLater = new Date(today);
+          tenYearsLater.setFullYear(today.getFullYear() + 10);
+          return tenYearsLater.toISOString().split("T")[0];
+        })()}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         className="w-full px-3 py-1 border border-gray-300 cursor-pointer focus:outline-none focus:border-gray-500 duration-75 invalid:text-gray-500  valid:text-gray-900 rounded-md "
       />
-      {error && <p className="p-1 select-none font-xs text-red-600 ">{error.message}</p>}
+      {error && (
+        <p className="p-1 select-none font-xs text-red-600 ">{error.message}</p>
+      )}
     </div>
   );
 }
 
-function TimePicker({value, onChange, error}: Props) {
-
+function TimePicker({ value, onChange, error }: Props) {
   const ref = useRef<HTMLInputElement>(null);
 
   return (
@@ -51,7 +58,11 @@ function TimePicker({value, onChange, error}: Props) {
           onChange={(e) => onChange(e.target.value)}
           className="w-full select-none cursor-pointer  px-3 py-1 border border-gray-300 invalid:text-gray-500 focus:outline-none focus:border-gray-500 duration-75  valid:text-gray-900 rounded-md  "
         />
-        {error && <p className="p-1 select-none font-xs text-red-600 ">{error.message}</p>}
+        {error && (
+          <p className="p-1 select-none font-xs text-red-600 ">
+            {error.message}
+          </p>
+        )}
       </div>
     </>
   );

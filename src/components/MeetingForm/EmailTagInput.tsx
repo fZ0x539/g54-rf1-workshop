@@ -127,7 +127,7 @@ export const EmailTagInputRHF = ({ name, control }: EmailTagInputRHFProps) => {
             setParticipants={onChange}
           />
           {error?.message && (
-            <p className="text-red-500 text-sm mt-1">{error.message}</p>
+            <p className="text-red-500 p-1 text-md mt-1 select-none">{error.message}</p>
           )}
         </div>
       )}

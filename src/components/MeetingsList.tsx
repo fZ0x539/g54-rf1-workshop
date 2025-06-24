@@ -2,10 +2,11 @@ import { MdEditNote } from "react-icons/md";
 import { TiDeleteOutline } from "react-icons/ti";
 import useMeeting from "../hooks/useMeeting";
 
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 export default function MeetingsList() {
-
-  const {data: meetings} = useMeeting();
+  const { data: meetings, isLoading } = useMeeting();
 
   return (
     <div className=" bg-gray-50 p-6 border border-gray-200 rounded-lg shadow-sm">
@@ -58,37 +59,61 @@ export default function MeetingsList() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200 bg-white">
-                  {meetings?.map((meeting, index) => (
-                    <tr key={index}>
-                      <td className="py-4 pr-3 pl-4 text-sm font-medium whitespace-nowrap text-gray-900 sm:pl-6">
-                        {meeting.title}
-                      </td>
-                      <td className="px-3 py-4 text-sm whitespace-nowrap text-gray-600">
-                        {meeting.date}
-                      </td>
-                      <td className="px-3 py-4 text-sm whitespace-nowrap text-gray-600">
-                        {meeting.time}
-                      </td>
-                      <td className="px-3 py-4 text-sm whitespace-nowrap text-gray-600">
-                        {meeting.meetingLevel}
-                      </td>
-                      <td className="flex justify-center gap-1 py-5 sm:pr-6">
-                        <a
-                          href="#edit"
-                          className="hover:opacity-80 duration-125 hover:text-orange-400 text-orange-600"
-                        >
-                          <MdEditNote size={24} />
-                        </a>
+                  {isLoading
+                    ? // Show skeleton rows while loading
+                      Array(5)
+                        .fill(0)
+                        .map((_, index) => (
+                          <tr key={`skeleton-${index}`}>
+                            <td className="py-4 pr-3 pl-4 text-sm font-medium whitespace-nowrap sm:pl-6">
+                              <Skeleton width={150} />
+                            </td>
+                            <td className="px-3 py-4 text-sm whitespace-nowrap">
+                              <Skeleton width={100} />
+                            </td>
+                            <td className="px-3 py-4 text-sm whitespace-nowrap">
+                              <Skeleton width={80} />
+                            </td>
+                            <td className="px-3 py-4 text-sm whitespace-nowrap">
+                              <Skeleton width={120} />
+                            </td>
+                            <td className="flex justify-center gap-1 py-5 sm:pr-6">
+                              <Skeleton width={24} height={24} circle />
+                              <Skeleton width={24} height={24} circle />
+                            </td>
+                          </tr>
+                        ))
+                    : meetings?.map((meeting, index) => (
+                        <tr key={index}>
+                          <td className="py-4 pr-3 pl-4 text-sm font-medium whitespace-nowrap text-gray-900 sm:pl-6">
+                            {meeting.title}
+                          </td>
+                          <td className="px-3 py-4 text-sm whitespace-nowrap text-gray-600">
+                            {meeting.date}
+                          </td>
+                          <td className="px-3 py-4 text-sm whitespace-nowrap text-gray-600">
+                            {meeting.time}
+                          </td>
+                          <td className="px-3 py-4 text-sm whitespace-nowrap text-gray-600">
+                            {meeting.meetingLevel}
+                          </td>
+                          <td className="flex justify-center gap-1 py-5 sm:pr-6">
+                            <a
+                              href="#edit"
+                              className="hover:opacity-80 duration-125 hover:text-orange-400 text-orange-600"
+                            >
+                              <MdEditNote size={24} />
+                            </a>
 
-                        <a
-                          href="#delete"
-                          className="hover:opacity-80 hover:text-red-400 duration-125 text-red-600"
-                        >
-                          <TiDeleteOutline size={24} />
-                        </a>
-                      </td>
-                    </tr>
-                  ))}
+                            <a
+                              href="#delete"
+                              className="hover:opacity-80 hover:text-red-400 duration-125 text-red-600"
+                            >
+                              <TiDeleteOutline size={24} />
+                            </a>
+                          </td>
+                        </tr>
+                      ))}
                 </tbody>
               </table>
             </div>

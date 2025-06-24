@@ -7,6 +7,8 @@ const apiClient = new APIClient<Meeting>('/meetings')
 export default function useMeeting() {
   return useQuery({
     queryKey: ['meetings'],
-    queryFn: apiClient.getAll
+    queryFn: apiClient.getAll,
+    staleTime: 5 * 1000,
+    
   })
 }

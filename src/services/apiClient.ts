@@ -5,6 +5,21 @@ const axiosInstance = axios.create({
   baseURL: API_BASEURL,
 });
 
+axiosInstance.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    const safeError = {
+      message: error.message,
+      status: error.response?.status,
+      data: error.response?.data, 
+    };
+    return Promise.reject(safeError);
+  }
+);
+
+// axiosInstance.defaults.transformRequest = undefined;
+// axiosInstance.defaults.transformResponse = undefined;
+
 class APIClient<T> {
   endpoint: string;
 
