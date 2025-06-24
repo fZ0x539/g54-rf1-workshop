@@ -1,13 +1,13 @@
 import { FcCalendar } from "react-icons/fc";
 import { FaUserTie } from "react-icons/fa";
+import { NavLink } from "react-router";
 
 
 const Navbar = () => {
   const pages = [
-    { id: 1, title: "Home", href: "#" },
-    { id: 2, title: "About", href: "#" },
-    { id: 3, title: "Users", href: "#" },
-    { id: 4, title: "Calendar", href: "#" },
+    { id: 1, title: "Home", href: "/" },
+    { id: 2, title: "About", href: "/about" },
+    { id: 3, title: "Calendar", href: "/calendar" }
   ];
 
   return (
@@ -19,9 +19,9 @@ const Navbar = () => {
           <ul>
             {pages.map((page) => (
               <li className="inline mx-2 hover:text-zinc-200 duration-12" key={page.id}>
-                <a className="" href={page.href}>
+                <NavLink className="" to={page.href}>
                   {page.title}
-                </a>
+                </NavLink>
               </li>
             ))}
           </ul>

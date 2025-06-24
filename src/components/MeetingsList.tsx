@@ -3,12 +3,12 @@ import { TiDeleteOutline } from "react-icons/ti";
 import useMeeting from "../hooks/useMeeting";
 
 
-export default function Example() {
+export default function MeetingsList() {
 
   const {data: meetings} = useMeeting();
 
   return (
-    <div className="my-5 bg-gray-50 p-6 border border-gray-200 rounded-lg shadow-sm">
+    <div className=" bg-gray-50 p-6 border border-gray-200 rounded-lg shadow-sm">
       <div className="sm:flex sm:items-center">
         <div className="sm:flex-auto">
           <h2 className="text-base font-semibold text-gray-900">Users</h2>

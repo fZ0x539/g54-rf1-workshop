@@ -112,7 +112,7 @@ const EmailTagInput = ({
 
 interface EmailTagInputRHFProps {
   name: string;
-  control: any; // or use proper type from RHF
+  control: any;
 }
 
 export const EmailTagInputRHF = ({ name, control }: EmailTagInputRHFProps) => {
@@ -136,21 +136,3 @@ export const EmailTagInputRHF = ({ name, control }: EmailTagInputRHFProps) => {
 };
 
 export default EmailTagInputRHF;
-
-// const handlePaste = (e: any) => {
-//   e.preventDefault();
-//   const pasteData = e.clipboardData.getData('text');
-//   const emails = pasteData.split(/[\s,;]+/).filter((email: string) => email.trim() !== '');
-
-//   const validEmails = emails.filter((email: string) => isValidEmail(email));
-//   const newEmails = validEmails.filter((email: string) => !participants.includes(email));
-
-//   if (newEmails.length > 0) {
-//     setParticipants([...participants, ...newEmails]);
-//   }
-
-//   if (emails.length !== validEmails.length) {
-//     setError('Some pasted emails were invalid');
-//     setTimeout(() => setError(''), 2000);
-//   }
-// };

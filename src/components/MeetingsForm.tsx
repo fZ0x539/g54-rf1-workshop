@@ -8,7 +8,7 @@ import { EmailTagInputRHF } from "./MeetingForm/EmailTagInput";
 import SelectMeetingLevel from "./MeetingForm/SelectMeetingLevel";
 import { DatePicker, TimePicker } from "./MeetingForm/TimeDatePicker";
 
-const ScheduleMeetingForm = () => {
+const MeetingsForm = () => {
   const addMeeting = useAddMeeting();
 
   const {
@@ -159,4 +159,4 @@ function TextArea({ error, ...props }: { error?: FieldError }) {
   );
 }
 
-export default ScheduleMeetingForm;
+export default MeetingsForm;
