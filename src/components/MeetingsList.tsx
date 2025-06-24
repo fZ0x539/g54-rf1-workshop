@@ -2,11 +2,20 @@ import { MdEditNote } from "react-icons/md";
 import { TiDeleteOutline } from "react-icons/ti";
 import useMeeting from "../hooks/useMeeting";
 
+import { useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+import { ConfirmationModal } from "./Modal/Modal";
 
 export default function MeetingsList() {
+  const [meetingToDelete, setMeetingToDelete] = useState<string | null>(null);
+
+
   const { data: meetings, isLoading, error } = useMeeting();
+
+  function handleDelete(meetingToDelete: string): void {
+    throw new Error("Function not implemented.");
+  }
 
   return (
     <div className=" bg-gray-50 p-6 border border-gray-200 rounded-lg shadow-sm">
@@ -59,7 +68,7 @@ export default function MeetingsList() {
                 </thead>
                 <tbody className="divide-y divide-gray-200 bg-white">
                   {isLoading
-                    ? // Show skeleton rows while loading
+                    ?
                       Array(5)
                         .fill(0)
                         .map((_, index) => (
@@ -91,7 +100,7 @@ export default function MeetingsList() {
                             {meeting.date}
                           </td>
                           <td className="px-3 py-4 text-sm whitespace-nowrap text-gray-600">
-                            {meeting.time.substring(0,5)}
+                            {meeting.time.substring(0, 5)}
                           </td>
                           <td className="px-3 py-4 text-sm whitespace-nowrap text-gray-600">
                             {meeting.meetingLevel}
@@ -104,12 +113,12 @@ export default function MeetingsList() {
                               <MdEditNote size={24} />
                             </a>
 
-                            <a
-                              href="#delete"
+                            <button
+                            onClick={() => setMeetingToDelete(`"${meeting.id}`)}
                               className="hover:opacity-80 hover:text-red-400 duration-125"
                             >
                               <TiDeleteOutline size={24} />
-                            </a>
+                            </button>
                           </td>
                         </tr>
                       ))}
@@ -119,7 +128,19 @@ export default function MeetingsList() {
           </div>
         </div>
       </div>
-      {error && <p className="p-1 mt-2 select-none font-xs text-red-600">{error.message}</p>}
+      {error && (
+        <p className="p-1 mt-2 select-none font-xs text-red-600">
+          {error.message}
+        </p>
+      )}
+
+      {setMeetingToDelete && <ConfirmationModal
+        isOpen={!!meetingToDelete}
+        onClose={() => setMeetingToDelete(null)}
+        onConfirm={() => meetingToDelete && handleDelete(meetingToDelete)}
+        title="Delete meeting?"
+        description={`Are you sure you want to delete this meeting?`}
+      /> }
     </div>
   );
 }
