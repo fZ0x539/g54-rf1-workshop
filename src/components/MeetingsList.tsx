@@ -1,23 +1,26 @@
 import { MdEditNote } from "react-icons/md";
 import { TiDeleteOutline } from "react-icons/ti";
-import useMeeting from "../hooks/useMeeting";
+import {useMeetings} from "../hooks/useMeeting";
 
 import { useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { ConfirmationModal } from "./Modal/Modal";
+import useDeleteMeeting from "../hooks/useDeleteMeeting";
+import { NavLink, Outlet } from "react-router";
 
 export default function MeetingsList() {
   const [meetingToDelete, setMeetingToDelete] = useState<string | null>(null);
-
-
-  const { data: meetings, isLoading, error } = useMeeting();
+  const { data: meetings, isLoading, error } = useMeetings();
+  const deleteMeeting = useDeleteMeeting();
 
   function handleDelete(meetingToDelete: string): void {
-    throw new Error("Function not implemented.");
+    deleteMeeting.mutate(meetingToDelete);
+    setMeetingToDelete(null);
   }
 
   return (
+    <>
     <div className=" bg-gray-50 p-6 border border-gray-200 rounded-lg shadow-sm">
       <div className="sm:flex sm:items-center">
         <div className="sm:flex-auto">
@@ -68,8 +71,7 @@ export default function MeetingsList() {
                 </thead>
                 <tbody className="divide-y divide-gray-200 bg-white">
                   {isLoading
-                    ?
-                      Array(5)
+                    ? Array(5)
                         .fill(0)
                         .map((_, index) => (
                           <tr key={`skeleton-${index}`}>
@@ -94,7 +96,9 @@ export default function MeetingsList() {
                     : meetings?.map((meeting, index) => (
                         <tr key={index}>
                           <td className="py-4 pr-3 pl-4 text-sm font-medium whitespace-nowrap text-gray-900 sm:pl-6">
-                            {meeting.title}
+                            <NavLink to={`/calendar/meetings/` + meeting.id}>
+                              {meeting.title}
+                            </NavLink>
                           </td>
                           <td className="px-3 py-4 text-sm whitespace-nowrap text-gray-600">
                             {meeting.date}
@@ -108,14 +112,16 @@ export default function MeetingsList() {
                           <td className="flex justify-center gap-1 py-5 sm:pr-6">
                             <a
                               href="#edit"
-                              className="hover:opacity-80 duration-125 hover:text-orange-400 "
+                              className="hover:opacity-80 duration-125 hover:text-orange-300 "
                             >
                               <MdEditNote size={24} />
                             </a>
 
                             <button
-                            onClick={() => setMeetingToDelete(`"${meeting.id}`)}
-                              className="hover:opacity-80 hover:text-red-400 duration-125"
+                              onClick={() =>
+                                setMeetingToDelete(`${meeting.id}`)
+                              }
+                              className="cursor-pointer hover:opacity-80 hover:text-red-600 duration-125"
                             >
                               <TiDeleteOutline size={24} />
                             </button>
@@ -134,13 +140,16 @@ export default function MeetingsList() {
         </p>
       )}
 
-      {setMeetingToDelete && <ConfirmationModal
-        isOpen={!!meetingToDelete}
-        onClose={() => setMeetingToDelete(null)}
-        onConfirm={() => meetingToDelete && handleDelete(meetingToDelete)}
-        title="Delete meeting?"
-        description={`Are you sure you want to delete this meeting?`}
-      /> }
+      {meetingToDelete && (
+        <ConfirmationModal
+          isOpen={!!meetingToDelete}
+          onClose={() => setMeetingToDelete(null)}
+          onConfirm={() => meetingToDelete && handleDelete(meetingToDelete)}
+          title="Delete meeting?"
+          description={`Are you sure you want to delete this meeting?`}
+        />
+      )}
     </div>
+    </>
   );
 }

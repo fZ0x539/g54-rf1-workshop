@@ -5,7 +5,6 @@ import {
   ListboxOption,
   ListboxOptions,
 } from "@headlessui/react";
-import { useState } from "react";
 import {
   Controller,
   type Control,
@@ -24,7 +23,6 @@ export default function SelectMeetingLevel<T extends FieldValues>({
   control,
   name
 }: SelectMeetingLevelProps<T>) {
-  const [selected, setSelected] = useState();
 
 
   return (

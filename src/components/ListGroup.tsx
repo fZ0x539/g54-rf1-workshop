@@ -32,9 +32,7 @@ const ListGroup = () => {
       href: "/calendar/users",
     },
   ];
-
   const location = useLocation();
-  console.log(location.pathname);
 
   return (
     <div className={clsx("md:col-span-1", "col-span-4 w ")}>
