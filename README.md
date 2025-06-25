@@ -94,13 +94,25 @@ A responsive CRUD application for managing meetings, built with Vite + React, co
      - Manages internal state for tag collection
      - Exposes value through RHF Controller
      - Features:
-     - Keyboard-driven UX (Enter to add, Backspace to remove)
+     - Keyboard-driven UX (Enter/Tab to add)
      - Visual feedback for invalid emails
      - Customizable badge styling via Tailwind
      - Accessibility support (ARIA labels)
 
 
     <img src="./assets/MeetingsForm.png" alt="MeetingsForm" width="400" />
+
+3. **Meeting Item** (`/calendar/meetings/:id`)
+    -Displays the full meeting information
+    -Includes both Edit & Delete buttons
+
+<img src="./assets/MeetingItem.png" alt="MeetingsForm" width="400" />
+
+4. **Custom Confirmation Modal**
+    -Loosely coupled, ready to be re-used elsewhere
+    -Accessible UX can be dismissed either by clicking outside the area or the ESC-key
+
+<img src="./assets/modal.png" alt="MeetingsForm" width="400" />
 
 ### Advanced Features
 
