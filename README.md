@@ -1,54 +1,130 @@
-# React + TypeScript + Vite
+# Meeting Calendar - React Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+<img src="./assets/MeetingsAppOverview.png" alt="App Screenshot" width="600" />
 
-Currently, two official plugins are available:
+A responsive CRUD application for managing meetings, built with Vite + React, connected to a [Spring Boot backend API](https://github.com/fZ0x539/MeetingCalendarApi).
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
 
-## Expanding the ESLint configuration
+- View all meetings in a paginated list
+- Create new meetings with form validation
+- Edit existing meetings
+- Delete meetings with confirmation
+- **Optimistic UI updates** for smooth user experience
+- Responsive design with **custom Tailwind CSS styling**
+- Client-side caching with Tanstack Query
+- Form validation with React Hook Form + Zod
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Technologies Used
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
+- ⚛️ React 19 - With functional components and hooks
+- 🔄 Tanstack Query - For data fetching, caching, and optimistic mutations
+- 📝 React Hook Form + Zod - For form handling and validation
+- 🛣️ React Router - For client-side routing
+- 🎨 Tailwind CSS - For custom utility-first styling
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js (v16 or higher recommended)
+- npm, yarn or pnpm
+- Running instance of the [backend API](https://github.com/fZ0x539/MeetingCalendarApi)
+
+### Installation
+
+1. Clone the repository:
+
+   ````bash
+   git clone https://github.com/your-username/meeting-calendar-frontend.git
+   cd meeting-calendar-frontend```
+
+   2. Install dependencies:
+   ```bash
+   npm install
+   # or
+   pnpm install
+   # or
+   yarn install
+   ````
+
+   3. Change the API URL to match yours:
+
+   ```/src/constants.ts
+   export const API_BASEURL = "http://localhost:8080/api"; # or your backend URL
+   ```
+
+   4. Start the development server:
+
+   ```bash
+   npm run dev
+   # or
+   pnpm vite
+   # or
+   yarn dev
+   ```
+
+   5. Open your browser and navigate to:
+
+   ```
+   http://localhost:5173
+   ```
+
+   ## Application Structure
+
+### Key Components
+
+1. **Meeting List** (`/calendar/meetings`)
+   - Displays all meetings in a paginated table
+   - Each row has actions for edit/delete
+     <img src="./assets/MeetingsList.png" alt="MeetingsList" width="400" />
+2. **Meeting Form** (`/calendar/meetings/add` or `/calendar/meetings/:id/edit`)
+   - Reusable component for both creating and editing meetings
+   - Form validation with Zod schema
+   - Error handling for API requests
+   - **EmailTagInput**
+     - Implements real-time email validation using regex
+     - Manages internal state for tag collection
+     - Exposes value through RHF Controller
+     - Features:
+     - Keyboard-driven UX (Enter to add, Backspace to remove)
+     - Visual feedback for invalid emails
+     - Customizable badge styling via Tailwind
+     - Accessibility support (ARIA labels)
+  <img src="./assets/MeetingsForm.png" alt="MeetingsForm" width="400" />
+
+### Advanced Features
+
+#### Optimistic Mutations
+
+The application implements several `useMutation` hooks with optimistic updates for:
+
+- Creating new meetings (immediately shows in UI while API request processes)
+- Editing existing meetings (instant UI update before confirmation)
+- Deleting meetings (removes from UI immediately with rollback on error)
+
+Example mutation:
+
+```typescript
+const { mutate } = useMutation({
+  mutationFn: updateMeeting,
+  onMutate: async (newMeeting) => {
+    await queryClient.cancelQueries(["meetings"]);
+    const previousMeetings = queryClient.getQueryData(["meetings"]);
+
+    queryClient.setQueryData(["meetings"], (old: Meeting[]) =>
+      old.map((meeting) =>
+        meeting.id === newMeeting.id ? newMeeting : meeting
+      )
+    );
+
+    return { previousMeetings };
   },
-})
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
+  onError: (err, newMeeting, context) => {
+    queryClient.setQueryData(["meetings"], context.previousMeetings);
   },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
+  onSettled: () => {
+    queryClient.invalidateQueries(["meetings"]);
   },
-})
+});
 ```
