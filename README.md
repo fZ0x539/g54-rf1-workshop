@@ -11,7 +11,7 @@ A responsive CRUD application for managing meetings, built with Vite + React, co
 - Edit existing meetings
 - Delete meetings with confirmation
 - **Optimistic UI updates** for smooth user experience
-- Responsive design with **custom Tailwind CSS styling**
+- **custom Tailwind CSS styling**
 - Client-side caching with Tanstack Query
 - Form validation with React Hook Form + Zod
 
@@ -35,11 +35,12 @@ A responsive CRUD application for managing meetings, built with Vite + React, co
 
 1. Clone the repository:
 
-   ````bash
-   git clone https://github.com/your-username/meeting-calendar-frontend.git
-   cd meeting-calendar-frontend```
+   ```bash
+   git clone https://github.com/fZ0x539/g54-rf1-workshop.git
+   cd g54-rf1-workshop
+   ```
 
-   2. Install dependencies:
+2. Install dependencies:
    ```bash
    npm install
    # or
@@ -48,13 +49,14 @@ A responsive CRUD application for managing meetings, built with Vite + React, co
    yarn install
    ````
 
-   3. Change the API URL to match yours:
+3. Change the API URL to match yours:
 
-   ```/src/constants.ts
-   export const API_BASEURL = "http://localhost:8080/api"; # or your backend URL
+   ```typescript
+   // /src/constants.ts
+   export const API_BASEURL = "http://localhost:8080/api";
    ```
 
-   4. Start the development server:
+4. Start the development server:
 
    ```bash
    npm run dev
@@ -64,20 +66,25 @@ A responsive CRUD application for managing meetings, built with Vite + React, co
    yarn dev
    ```
 
-   5. Open your browser and navigate to:
+5. Open your browser and navigate to:
 
    ```
    http://localhost:5173
    ```
 
-   ## Application Structure
+
+
+## Application Structure
 
 ### Key Components
 
 1. **Meeting List** (`/calendar/meetings`)
    - Displays all meetings in a paginated table
    - Each row has actions for edit/delete
-     <img src="./assets/MeetingsList.png" alt="MeetingsList" width="400" />
+
+    <img src="./assets/MeetingsList.png" alt="MeetingsList" width="400" />
+
+
 2. **Meeting Form** (`/calendar/meetings/add` or `/calendar/meetings/:id/edit`)
    - Reusable component for both creating and editing meetings
    - Form validation with Zod schema
@@ -91,7 +98,9 @@ A responsive CRUD application for managing meetings, built with Vite + React, co
      - Visual feedback for invalid emails
      - Customizable badge styling via Tailwind
      - Accessibility support (ARIA labels)
-  <img src="./assets/MeetingsForm.png" alt="MeetingsForm" width="400" />
+
+
+    <img src="./assets/MeetingsForm.png" alt="MeetingsForm" width="400" />
 
 ### Advanced Features
 
