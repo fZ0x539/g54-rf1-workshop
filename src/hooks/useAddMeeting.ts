@@ -27,7 +27,7 @@ export default function useAddMeeting() {
 
       return { previousMeetings };
     },
-    onError: (error, newMeeting, context) => {
+    onError: (error, _, context) => {
       if (!context) return;
       queryClient.setQueryData<Meeting[]>(
         CACHE_KEY_MEETINGS,
@@ -35,9 +35,9 @@ export default function useAddMeeting() {
       );
       toast.error(`Error adding todo: ${error.message}`);
     },
-    onSuccess: (savedMeeting, newMeeting) => {
+    onSuccess: (_, newMeeting) => {
       queryClient.invalidateQueries({ queryKey: CACHE_KEY_MEETINGS });
-      toast.success("Todo added successfully!");
+      toast.success("Successfully added: " + newMeeting.title);
     },
   });
 }

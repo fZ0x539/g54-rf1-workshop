@@ -20,11 +20,7 @@ axiosInstance.interceptors.response.use(
 // axiosInstance.defaults.transformRequest = undefined;
 // axiosInstance.defaults.transformResponse = undefined;
 
-interface TypeWithId {
-  id: number;
-}
-
-class APIClient<T extends TypeWithId> {
+class APIClient<T> {
   endpoint: string;
 
   constructor(endpoint: string) {
@@ -49,7 +45,7 @@ class APIClient<T extends TypeWithId> {
       .then((res) => res.data);
   }
 
-  update = (data: T) => {
+  update = (data: T & { id: number | string }) => {
     return axiosInstance
       .put<T>(this.endpoint + '/' + data.id, data)
       .then((res) => res.data);

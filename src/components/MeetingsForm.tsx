@@ -10,10 +10,11 @@ import { EmailTagInputRHF } from "./MeetingForm/EmailTagInput";
 import SelectMeetingLevel from "./MeetingForm/SelectMeetingLevel";
 import { DatePicker, TimePicker } from "./MeetingForm/TimeDatePicker";
 import { TextArea, TextInput } from "./MeetingForm/TextInputArea";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 
 const MeetingsFormAddEdit = () => {
   const params = useParams();
+  const navigate = useNavigate();
   const meetingId = params.meetingId;
 
   const {
@@ -61,9 +62,9 @@ const MeetingsFormAddEdit = () => {
       updateMeeting.mutate(
         { id: parseInt(meetingId), ...data },
         {
-          onSuccess: () => {
-            // reset();
+          onSettled: () => {
             setRqError("");
+            navigate('/calendar/meetings')
           },
           onError: (error: Error) => setRqError(error.message),
         }
@@ -82,6 +83,7 @@ const MeetingsFormAddEdit = () => {
           onSuccess: () => {
             reset();
             setRqError("");
+            navigate('/calendar/meetings')
           },
           onError: (error) => setRqError(error.message),
         }
