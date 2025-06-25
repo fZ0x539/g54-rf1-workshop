@@ -1,6 +1,6 @@
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
-import { useNavigate, useParams } from "react-router";
+import { NavLink, useNavigate, useParams } from "react-router";
 import { useMeeting } from "../hooks/useMeeting";
 import clsx from "clsx";
 import { LuCalendarDays } from "react-icons/lu";
@@ -47,10 +47,8 @@ export default function MeetingItem() {
             `inline-flex items-center px-3 py-1 rounded-full text-sm font-medium`,
             {
               "bg-amber-100 text-amber-800": meeting.meetingLevel === "Client",
-              "bg-green-100 text-green-800 ":
-                meeting.meetingLevel === "Division",
-              "bg-purple-100 text-purple-800":
-                meeting.meetingLevel === "Department",
+              "bg-green-100 text-green-800 ": meeting.meetingLevel === "Division",
+              "bg-purple-100 text-purple-800": meeting.meetingLevel === "Department",
               "bg-blue-100 text-blue-800": meeting.meetingLevel === "Team",
             }
           )}
@@ -80,6 +78,12 @@ export default function MeetingItem() {
       )}
 
       <div className="mt-5 text-right">
+        <NavLink
+          to={"/calendar/meetings/" + meetingId + "/edit"}
+          className=" text-yellow-600 group hover:text-black/60 border border-yellow-300 hover:bg-yellow-300  focus:outline-none  font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2  "
+        >
+            Delete
+        </NavLink>
         <button
           type="button"
           onClick={() => setMeetingToDelete(`${meeting.id}`)}
