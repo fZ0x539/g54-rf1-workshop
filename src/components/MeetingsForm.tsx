@@ -62,11 +62,13 @@ const MeetingsFormAddEdit = () => {
       updateMeeting.mutate(
         { id: parseInt(meetingId), ...data },
         {
-          onSettled: () => {
+          onSuccess: () => {
             setRqError("");
             navigate('/calendar/meetings')
           },
-          onError: (error: Error) => setRqError(error.message),
+          onError: (error: Error) => {
+            setRqError(error.message)
+          },
         }
       );
     } else {

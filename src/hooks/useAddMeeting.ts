@@ -33,7 +33,7 @@ export default function useAddMeeting() {
         CACHE_KEY_MEETINGS,
         context.previousMeetings
       );
-      toast.error(`Error adding todo: ${error.message}`);
+      toast.error(`Error adding meeting: ${error.message}`);
     },
     onSuccess: (_, newMeeting) => {
       queryClient.invalidateQueries({ queryKey: CACHE_KEY_MEETINGS });

@@ -47,6 +47,7 @@ export default function useUpdateMeeting() {
           context.previousMeeting
         );
       }
+      toast.error(`Error updating meeting: ${err.message}`);
     },
     onSuccess: (updatedMeeting) => {
       Promise.all([
@@ -55,7 +56,7 @@ export default function useUpdateMeeting() {
           queryKey: ["meeting", updatedMeeting.id],
         }),
       ]);
-      toast.success("Successfully updated meeting!");
+      toast.success("Successfully updated: " + updatedMeeting.title);
     }
   });
 }
