@@ -103,16 +103,16 @@ A responsive CRUD application for managing meetings, built with Vite + React, co
     <img src="./assets/MeetingsForm.png" alt="MeetingsForm" width="400" />
 
 3. **Meeting Item** (`/calendar/meetings/:id`)
-    -Displays the full meeting information
-    -Includes both Edit & Delete buttons
+    - Displays the full meeting information
+    - Includes both Edit & Delete buttons
 
-<img src="./assets/MeetingItem.png" alt="MeetingsForm" width="400" />
+   <img src="./assets/MeetingItem.png" alt="MeetingsForm" width="400" />
 
 4. **Custom Confirmation Modal**
-    -Loosely coupled, ready to be re-used elsewhere
-    -Accessible UX can be dismissed either by clicking outside the area or the ESC-key
+    - Loosely coupled, ready to be re-used elsewhere
+    - Accessible UX can be dismissed either by clicking outside the area or the ESC-key
 
-<img src="./assets/modal.png" alt="MeetingsForm" width="400" />
+   <img src="./assets/modal.png" alt="MeetingsForm" width="400" />
 
 ### Advanced Features
 
