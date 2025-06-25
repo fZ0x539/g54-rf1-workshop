@@ -77,21 +77,19 @@ export default function MeetingItem() {
         </div>
       )}
 
-      <div className="mt-5 text-right">
+      <div className="mt-5 flex flex-row justify-end gap-2 ">
         <NavLink
           to={"/calendar/meetings/" + meetingId + "/edit"}
-          className=" text-yellow-600 group hover:text-black/60 border border-yellow-300 hover:bg-yellow-300  focus:outline-none  font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2  "
+          className=" text-yellow-600 group hover:text-black/50 border border-yellow-300 hover:bg-yellow-300  focus:outline-none  font-medium rounded-lg text-sm px-5 py-2.5 text-center "
         >
-            Delete
+          Edit
         </NavLink>
         <button
           type="button"
           onClick={() => setMeetingToDelete(`${meeting.id}`)}
-          className="cursor-pointer text-red-700 group hover:text-white border border-red-700 hover:bg-red-600  focus:outline-none  font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2  "
+          className="box-border cursor-pointer text-red-700 group hover:text-white border border-red-700 hover:bg-red-600  focus:outline-none  font-medium rounded-lg text-sm px-5 py-2 text-center"
         >
-          <span className="transition-transform duration-75 active:scale-75">
-            Delete
-          </span>
+          Delete
         </button>
       </div>
 

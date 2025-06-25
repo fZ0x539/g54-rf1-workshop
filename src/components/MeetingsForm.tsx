@@ -1,23 +1,20 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { BiSolidCat } from "react-icons/bi";
 import useAddMeeting from "../hooks/useAddMeeting";
-import { useMeeting } from '../hooks/useMeeting';
-import useUpdateMeeting from '../hooks/useUpdateMeeting';
+import { useMeeting } from "../hooks/useMeeting";
+import useUpdateMeeting from "../hooks/useUpdateMeeting";
 import { meetingSchema, type Meeting } from "../zod/schema";
 import { EmailTagInputRHF } from "./MeetingForm/EmailTagInput";
 import SelectMeetingLevel from "./MeetingForm/SelectMeetingLevel";
 import { DatePicker, TimePicker } from "./MeetingForm/TimeDatePicker";
-import { TextArea, TextInput } from './MeetingForm/TextInputArea';
+import { TextArea, TextInput } from "./MeetingForm/TextInputArea";
 import { useParams } from "react-router";
 
-
 const MeetingsFormAddEdit = () => {
-
   const params = useParams();
   const meetingId = params.meetingId;
-  
 
   const {
     register,
@@ -37,14 +34,15 @@ const MeetingsFormAddEdit = () => {
     },
   });
 
-  const [rqError, setRqError] = useState('');
+  const [rqError, setRqError] = useState("");
   const addMeeting = useAddMeeting();
-  const updateMeeting = useUpdateMeeting(); 
+  const updateMeeting = useUpdateMeeting();
 
-  // Fetch meeting data if in edit mode
-  const { data: existingMeeting } = useMeeting(parseInt(meetingId || '0'));
 
-  // Populate form when existingMeeting changes
+  const { data: existingMeeting } = meetingId 
+    ? useMeeting(parseInt(meetingId))
+    : { data: undefined };
+
   useEffect(() => {
     if (existingMeeting) {
       reset({
@@ -60,19 +58,17 @@ const MeetingsFormAddEdit = () => {
 
   const onSubmit = (data: Meeting) => {
     if (meetingId) {
-      // Update existing meeting
       updateMeeting.mutate(
         { id: parseInt(meetingId), ...data },
-        { 
+        {
           onSuccess: () => {
             // reset();
-            setRqError('');
+            setRqError("");
           },
-          onError: (error: Error) => setRqError(error.message)
+          onError: (error: Error) => setRqError(error.message),
         }
       );
     } else {
-      // Create new meeting
       addMeeting.mutate(
         {
           title: data.title,
@@ -82,12 +78,12 @@ const MeetingsFormAddEdit = () => {
           participants: [...data.participants],
           description: data.description,
         },
-        { 
-          onSuccess: () => { 
-            reset(); 
-            setRqError('');
+        {
+          onSuccess: () => {
+            reset();
+            setRqError("");
           },
-          onError: (error) => setRqError(error.message) 
+          onError: (error) => setRqError(error.message),
         }
       );
     }
@@ -100,7 +96,7 @@ const MeetingsFormAddEdit = () => {
   return (
     <div className="bg-gray-50 p-6 border border-gray-200 rounded-lg shadow-sm">
       <h2 className="text-xl font-bold mb-6">
-        {meetingId ? 'Edit Meeting' : 'Schedule Meeting'}
+        {meetingId ? "Edit Meeting" : "Schedule Meeting"}
       </h2>
       <form
         className="flex flex-col gap-3"
@@ -145,18 +141,15 @@ const MeetingsFormAddEdit = () => {
           type="submit"
         >
           <BiSolidCat />
-          {meetingId ? 'Update Meeting' : 'Create Meeting'}
+          {meetingId ? "Update Meeting" : "Create Meeting"}
         </button>
       </form>
       {rqError && (
-        <p className="p-1 select-none font-xs text-red-600">
-          {rqError}
-        </p>
+        <p className="p-1 select-none font-xs text-red-600">{rqError}</p>
       )}
     </div>
   );
 };
 
-// Your TextInput and TextArea components remain the same
 
 export default MeetingsFormAddEdit;
